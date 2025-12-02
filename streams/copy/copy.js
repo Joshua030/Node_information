@@ -17,7 +17,7 @@ const fs = require("fs/promises");
 
 /*** In production you need to handle the errors */
 
-(async () => {
+/* (async () => {
   console.time("copyFile");
   const srcFile = await fs.open("text.txt", "r");
   const destFile = await fs.open("text-copy.txt", "w");
@@ -31,4 +31,41 @@ const fs = require("fs/promises");
   }
 
   console.timeEnd("copyFile");
+})();
+ */
+
+// Use pipeline for large files
+(async () => {
+  console.time("copy");
+
+  const srcFile = await fs.open("text-big.txt", "r");
+  const destFile = await fs.open("text-copy.txt", "w");
+
+  const readStream = srcFile.createReadStream();
+  const writeStream = destFile.createWriteStream();
+
+  // console.log(readStream.readableFlowing);
+
+  // readStream.pipe(writeStream); Write data from readStream to writeStream
+
+  // console.log(readStream.readableFlowing);
+
+  // readStream.unpipe(writeStream);
+
+  // console.log(readStream.readableFlowing);
+
+  // readStream.pipe(writeStream);
+
+  // console.log(readStream.readableFlowing);
+
+  // readStream.on("end", () => {
+  //   console.timeEnd("copy");
+  // });
+
+  // Don't use pipe in production, use pipeline instead! It will automatically
+  // handle the cleanings for you and give you an easy way for error handling
+  pipeline(readStream, writeStream, (err) => {
+    console.log(err);
+    console.timeEnd("copy");
+  });
 })();
