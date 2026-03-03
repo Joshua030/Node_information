@@ -1,4 +1,5 @@
 import express from "express";
+import { todoRouter } from "./http/todo.router";
 
 export function createApp(): express.Application {
   const app = express();
@@ -9,6 +10,9 @@ export function createApp(): express.Application {
   app.get("/health", (_req, res) => {
     res.json({ status: "ok", timestamp: new Date().toISOString() });
   });
+
+  // Mount routes
+  app.use("/api/todos", todoRouter);
 
   return app;
 }
